@@ -1,3 +1,3 @@
 # deltacalendar
 
-##Task 3 web dev Delta - Calendar
+Task 3 web dev Delta - Calendar
