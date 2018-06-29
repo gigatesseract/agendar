@@ -19,9 +19,9 @@ include 'sqlconnect.php';
       echo '<div class = "loginform">';
     echo  '<form class="login" action="login.php" method="post">';
     echo '<p class =  "username"> Enter your username:-    </p>';
-    echo   '<input type="text" name="username" value="" placeholder="Enter your username"><br>';
+    echo   '<input type="text" name="username" value="" placeholder="Enter your username" required><br>';
     echo '<p class =  "username"> Enter your password:- </p>';
-      echo '<input type="password" name="password" value="">';
+      echo '<input type="password" name="password" value="" required>';
       echo '<input type="hidden" name="stage" value="loginprocess"><br>';
       echo '<input type = "submit" name = "submit" value = "submit">';
      echo '</form>';
@@ -31,16 +31,19 @@ include 'sqlconnect.php';
     function process_form(){
 
        $conn = mysqli_connect("localhost", "username","password", "deltadb");
-      $query = "SELECT NAME, PASSWORD FROM deltadb.logintable where NAME = '".$_POST['username']."'";
+       $username = $_POST['username'];
+      $query = "SELECT NAME, PASSWORD FROM deltadb.logintable where NAME = ?";
       if($stmt = mysqli_prepare($conn, $query)){
+        mysqli_stmt_bind_param($stmt, 's', $username);
       mysqli_stmt_execute($stmt);
       mysqli_stmt_bind_result($stmt, $name, $password);
       while(mysqli_stmt_fetch($stmt));
 
       if($_POST['username']==$name && crypt($_POST['password'],'34')== $password)
-      { $query = "SELECT NICKNAME FROM deltadb.logintable where NAME = '".$_POST['username']."'";
+      { $query = "SELECT NICKNAME FROM deltadb.logintable where NAME = ?";
         if($stmt = mysqli_prepare($conn, $query))
         {
+          mysqli_stmt_bind_param($stmt, 's', $username);
 
           mysqli_stmt_execute($stmt);
           mysqli_stmt_bind_result($stmt, $nick);

@@ -15,7 +15,14 @@ include 'calendar.php';
 <p>WElcome, <?php echo $_SESSION['nick']; ?></p>
 
     <?php
+    if(isset($_POST['jumpset']))
+    {
+      $month = $_POST['jmonth'];
+      $year = $_POST['jyear'];
+      unset($_POST['jumpset']);
+    }
 draw_calendar($month, $year);
+print_jumptodate();
 
 
     if(isset($_POST['processappointment']))
@@ -35,23 +42,29 @@ draw_calendar($month, $year);
      process_pending();
      unset($_POST['pending']);
    }
+   if(isset($_POST['apphidden'])){
+     delete_appointment();
+     unset($_POST['apphidden']);
+
+   }
 
 
    function print_meeting(){
 
      echo '<h4> Schedule a meeting with your friend </h4>';
-     echo '<div class = "meeting">';
-     echo '<form class="invform" method="post" action = "welcome.php" id = "iform" >';
-     echo '<input type = "text" name = "invitee" placeholder = "INvite your friend">';
-     echo '<span> From </span>';
-     echo '<input type = "time" name = "stime"/>';
-     echo '<span> To </span>';
-     echo '<input type = "time" name = "etime"/>';
+     echo '<div class = "meeting"><form></form>';
+     echo '<form class="invform" method="post" action = "welcome.php" id = "iform">';
+     echo '<span> Enter username of friend </span><input type = "text" name = "invitee" placeholder = "Invite your friend" required><br>';
+     echo '<span> From time:- </span>';
+     echo '<input type = "time" name = "stime" required/><span class = white-space></span>';
+     echo '<span> To:-  </span>';
+     echo '<input type = "time" name = "etime" required/><br>';
      echo '<span> On </span>';
      echo '<input type = "date" name = "dmy" id = "idate" required/>';
      echo '<input type = "hidden" name = "invite" value = "inviteset" />';
      echo '<input type = "submit" name = "submit" value = "Invite"/>';
-     echo '</form></div>';
+     echo '</form>';
+     echo '</div>';
 
    }
 
@@ -60,10 +73,10 @@ draw_calendar($month, $year);
       echo '<h3> Create an appointment for '.$_POST['date'].'/'.$_POST['month'].'/'.$_POST['year'].'</h3>';
 
     echo   '<form class="" action="welcome.php" method="post">';
-    echo '    <input type="text" name="title" value="" placeholder="Title"/>';
-    echo '    <input type="textarea" name="description" value="" placeholder="Descri"/>';
-    echo '    <input type="time" name="start" value="" placeholder="start time">';
-    echo    '<input type="time" name="end" value="" placeholder="end time">';
+    echo '   <span> Enter title of the appointment</span> <input type="text" name="title" value="" placeholder="Title" required/><br>';
+    echo '   <span> Optional Description:- </span> <input type="textarea" name="description" value="" placeholder="Descri"/><br>';
+    echo '   <span> Start time of the appointment </span> <input type="time" name="start" value="" placeholder="start time" required><br>';
+    echo '  <span> End time of the appointment </span><input type="time" name="end" value="" placeholder="end time" required><br>';
     echo    '<input type="submit" name="submit" value="Create Appointment">';
     echo  '   <input type="hidden" name="processappointment" value="newappset">';
 
@@ -82,6 +95,7 @@ draw_calendar($month, $year);
 
 function process_meeting(){
   $conn = mysqli_connect("localhost","username", "password", "deltadb");
+  $flag = FALSE;
 $dmy = $_POST['dmy'];
 $stime = $_POST['stime'];
 $etime = $_POST['etime'];
@@ -89,12 +103,61 @@ $date = (int)(substr($dmy, 8,9));
 $month = (int)(substr($dmy, 5, 6));
 $year = (int)(substr($dmy, 0, 4));
 $name = $_SESSION['name'];
-$query = "INSERT INTO deltadb.meetingtable VALUES ('".$date."', '".$month."', '".$year."','".$stime."', '".$etime."', '".$name."', '".$_POST['invitee']."', 'Not confirmed')";
-if(!mysqli_query($conn, $query)) echo mysqli_error($conn);
+// $query = "SELECT NAME FROM deltadb.logintable WHERE NAME = '".$_POST['invitee']."'";
+// if(!mysqli_query($conn, $query)) echo mysqli_error($conn);
+if($stmt = mysqli_prepare($conn, "SELECT NAME FROM deltadb.logintable WHERE NAME = ?")){
+
+  mysqli_stmt_bind_param($stmt, 's', $_POST['invitee']);
+ mysqli_stmt_execute($stmt);
+ mysqli_stmt_store_result($stmt);
+ if(mysqli_stmt_num_rows($stmt)==0)
+ {
+   echo 'There is no user with that username';
+   $flag =  TRUE;
+ }
+
+ }
+
+
+if(!$flag){
+
+
+
+$status = "Not confirmed";
+$query = "INSERT INTO deltadb.meetingtable VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, 'iiisssss', $date, $month, $year, $stime, $etime, $name, $_POST['invitee'], $status);
+mysqli_stmt_execute($stmt);
+
+
+}
+echo '<script type="text/javascript">';
+echo 'document.location.replace("/welcome.php")';
+echo '</script>';
+
+}
+
+function delete_appointment(){
+    $conn = mysqli_connect("localhost","username", "password", "deltadb");
+ $date = $_POST['appdate'];
+ $month = $_POST['appmonth'];
+ $year = $_POST['appyear'];
+ $stime = $_POST['appstime'];
+ $etime = $_POST['appetime'];
+ if($stmt = mysqli_prepare($conn, "DELETE FROM deltadb.appointtable WHERE NAME = ? AND DAT = ? AND MONTH = ? AND YEAR = ? AND STARTTIME = ? AND ENDTIME = ?"))
+{
+  mysqli_stmt_bind_param($stmt, 'siiiss', $_SESSION['name'], $date, $month, $year, $stime, $etime);
+  mysqli_execute($stmt);
+  echo '<script type="text/javascript">';
+echo 'document.location.replace("/welcome.php")';
+echo '</script>';
+
+}
 
 }
 
     function process_appointment(){
+      echo 'hihihihi';
       $flag = FALSE;
       $conn = mysqli_connect("localhost","username", "password", "deltadb");
     $title = $_POST['title'];
@@ -105,30 +168,36 @@ if(!mysqli_query($conn, $query)) echo mysqli_error($conn);
     $month = $_POST['month'];
     $year = $_POST['year'];
 
-    $query = "SELECT STARTTIME, ENDTIME FROM deltadb.appointtable WHERE DAT = '".$date."' AND MONTH = '".$month."' AND YEAR = '".$year."'";
-    if($stime=='') {
-      echo 'Start-time can\'t be empty';
-      create_appointment();
-    }
-    else if($etime=='') {
-      echo 'ENd time can\t be empty';
-      create_appointment();
-    }
+    $query = "SELECT STARTTIME, ENDTIME FROM deltadb.appointtable WHERE DAT = ? AND MONTH = ? AND YEAR = ? AND NAME = ?";
 
-    else if($stmt = mysqli_prepare($conn, $query)){
+  if($stmt = mysqli_prepare($conn, $query)){
+      mysqli_stmt_bind_param($stmt, 'iiis', $date, $month, $year, $_SESSION['name']);
      mysqli_stmt_execute($stmt);
      mysqli_stmt_bind_result($stmt, $starttime, $endtime);
      while(mysqli_stmt_fetch($stmt)){
 
+
        if($starttime==$stime && $endtime==$etime)
-       echo '<p> You already have an appointment during that time.</p>';
+       {echo '<p> You already have an appointment during that time.</p>';
        create_appointment();
        $flag = TRUE;
+     }
 
      }
+
    }
-    if(!$flag){$query = "INSERT INTO deltadb.appointtable VALUES ('".$date."', '".$month."', '".$year."', '".$title."', '".$descri."', '".$stime."', '".$etime."')";
-    if(!mysqli_query($conn, $query)) echo 'Time cannot be left empty';
+    if(!$flag){
+
+
+      if($stmt = mysqli_prepare($conn, "INSERT INTO deltadb.appointtable VALUES (?, ?, ?, ?, ?, ?, ?, ?)"))
+      {
+        mysqli_stmt_bind_param($stmt, 'siiissss', $_SESSION['name'], $date, $month, $year, $title, $descri, $stime, $etime);
+        mysqli_execute($stmt);
+        echo 'hi';
+      }
+
+
+
     echo '<script type="text/javascript">';
   echo 'document.location.replace("/welcome.php")';
   echo '</script>';
@@ -151,18 +220,30 @@ if(!mysqli_query($conn, $query)) echo mysqli_error($conn);
     $invyear = $_POST['invyear'];
     $invstime = $_POST['invstime'];
     $invetime = $_POST['invetime'];
-    echo $bywhom;
+
     if($_POST['submitinvite']=="Decline")
     {
-      $query = "UPDATE deltadb.meetingtable SET STATUS = 'Declined' WHERE DAT = '".$invdate."' AND MONTH = '".$invmonth."' AND YEAR = '".$invyear."' AND STIME = '".$invstime."' AND ETIME = '".$invetime."' AND INVITED_BY = '".$bywhom."'";
-      if(!mysqli_query($conn, $query)) echo mysqli_error($conn);
+      $status = "Declined";
+      $stmt = mysqli_prepare($conn, "UPDATE deltadb.meetingtable SET STATUS = ? WHERE DAT = ? AND MONTH = ? AND YEAR = ? AND STIME = ? AND ETIME = ? AND INVITED_BY = ?");
+      mysqli_stmt_bind_param($stmt, 'siiisss', $status, $invdate, $invmonth, $invyear, $invstime, $invetime, $bywhom);
+      mysqli_execute($stmt);
     }
     else if($_POST['submitinvite']=="Accept")
     {
-      $query = "UPDATE deltadb.meetingtable SET STATUS = 'Accepted' WHERE DAT = '".$invdate."' AND MONTH = '".$invmonth."' AND YEAR = '".$invyear."' AND STIME = '".$invstime."' AND ETIME = '".$invetime."' AND INVITED_BY = '".$bywhom."'";
-      if(!mysqli_query($conn, $query)) echo mysqli_error($conn);
-      $query = "INSERT INTO deltadb.appointtable VALUES ('".$_SESSION['name']."', '".$invdate."', '".$invmonth."', '".$invyear."', 'MEETING', 'Meetup with '"."'".$bywhom."', '".$invstime."', '".$invetime."')";
-      if(!mysqli_query($conn, $query)) echo mysqli_error($conn, $query);
+      $status = 'Accepted';
+      if($stmt = mysqli_prepare($conn, "UPDATE deltadb.meetingtable SET STATUS = ? WHERE DAT = ? AND MONTH = ? AND YEAR = ? AND STIME = ? AND ETIME = ? AND INVITED_BY = ?")){
+      mysqli_stmt_bind_param($stmt, 'siiisss', $status, $invdate, $invmonth, $invyear, $invstime, $invetime, $bywhom);
+      mysqli_execute($stmt);}
+      $title = 'MEETING';
+      $descri = 'Meeting with '.$bywhom;
+      if($stmt = mysqli_prepare($conn, "INSERT INTO deltadb.appointtable VALUES (?, ?, ?, ?, ?, ?, ?, ?)")){
+      mysqli_stmt_bind_param($stmt, 'siiissss', $_SESSION['name'], $invdate, $invmonth, $invyear, $title, $descri, $invstime, $invetime);
+      mysqli_execute($stmt);}
+        $descri = 'Meeting with '.$_SESSION['name'];
+      if($stmt = mysqli_prepare($conn, "INSERT INTO deltadb.appointtable VALUES (?, ?, ?, ?, ?, ?, ?, ?)")){
+      mysqli_stmt_bind_param($stmt, 'siiissss', $bywhom, $invdate, $invmonth, $invyear, $title, $descri, $invstime, $invetime);
+      mysqli_execute($stmt);}
+
     }
 
   }
@@ -214,11 +295,7 @@ process_meeting();
   }
 
   var idate = document.getElementById('idate');
-  var iform = document.getElementById('iform');
-  iform.onsubmit = function(){
 
-
-  }
   var xhr = new XMLHttpRequest();
   var div = document.getElementById('pending');
 function showPending(){

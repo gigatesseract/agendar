@@ -30,7 +30,7 @@ function draw_calendar($month, $year)
   for($i=1, $j=$weekday;$i<=$daysinmonth; $i++, $j++)
   {
 
-      $calendar.='<td class = "number" onclick = "showPopup('.$i.','.$daysinmonth.')"><p>'.$i.'</p>'.new_appointment($i, $month, $year).display_appointments($i, $month, $year).'</td>';
+      $calendar.='<td class = "number"><p onclick = "showPopup('.$i.','.$daysinmonth.')">'.$i.'</p>'.new_appointment($i, $month, $year).display_appointments($i, $month, $year).'</td>';
       echo '</td>';
       if($j==6){
         $calendar.='</tr><tr class = "row">';
@@ -105,37 +105,19 @@ function display_appointments($date, $month, $year){
 return $str;
 }
 
-// function display_pending(){
-//   $str = '<div class = "pending">';
-// $conn = mysqli_connect("localhost","username", "password");
-// $query = "SELECT DAT, MONTH, YEAR, STIME, ETIME, INVITED_BY FROM deltadb.meetingtable WHERE INVITE_TO = '".$_SESSION['name']."' AND STATUS = 'Not confirmed'";
-// if($stmt = mysqli_prepare($conn, $query)){
-//   mysqli_stmt_execute($stmt);
-//   mysqli_stmt_bind_result($stmt, $date, $month, $year, $stime, $etime, $by);
-//   while(mysqli_stmt_fetch($stmt)){
-//     $str.='<div>';
-//     $str.='<p>With '.$by.' on '.$date.'/'.$month.'/'.$year.' from '.$stime.' to '.$etime.'</p>';
-//     $str.= '<form action = "welcome.php" method = "POST">';
-//     $str.='<input type = "submit" name = "submitinvite" value = "Accept"/>';
-//     $str.= '<input type = "submit" name = "submitinvite" value = "Decline"/>';
-//     $str.='<input type = "hidden" name = "bywhom" value = "'.$by.'">';
-//     $str.='<input type = "hidden" name = "invdate" value = "'.$date.'">';
-//     $str.='<input type = "hidden" name = "invmonth" value = "'.$month.'">';
-//     $str.='<input type = "hidden" name = "invyear" value = "'.$year.'">';
-//     $str.='<input type = "hidden" name = "invstime" value = "'.$stime.'">';
-//     $str.='<input type = "hidden" name = "invetime" value = "'.$etime.'">';
-//     $str.='<input type = "hidden" name = "pending" value = "pendingset">';
-//
-//     $str.='</form></div>';
-//   }
-//
-//
-//
-//
-// }
-// $str.='</div>';
-// return $str;
-// }
+
+
+function print_jumptodate(){
+  echo '<form method = "post" action = "/welcome.php">';
+  echo '<span> Jump to month:- </span>';
+  echo '<input type = "number" name = "jmonth" value = "1" min = "1" max = "12"><br>';
+  echo '<span> Jump to year:- </span>';
+  echo '<input type = "number" name = "jyear" value = "2018" min = "1971" max = "2071"><br>';
+  echo '<input type = "hidden" name = "jumpset" value = "jumpset">';
+  echo '<input type = "submit" name = "submitjump" value = "Go">';
+  echo '</form>';
+
+}
 
 function display_popup($date,$month, $year){
 $daysinmonth = date('t', mktime(0,0,0,$month, 1, $year));
@@ -148,7 +130,18 @@ $daysinmonth = date('t', mktime(0,0,0,$month, 1, $year));
    mysqli_stmt_bind_result($stmt, $title, $descri, $stime, $etime);
   while(mysqli_stmt_fetch($stmt)){
 
-     $str.='<tr><td>'.$title.'</td><td>'.$descri.'</td><td>'.$stime.'</td><td>'.$etime.'</td></tr>';
+     $str.='<tr><td>'.$title.'</td><td>'.$descri.'</td><td>'.$stime.'</td><td>'.$etime;
+
+     $str.='<form method = "POST" action = "/welcome.php">';
+     $str.='<input type = "submit" name = "appsubmit" value = "Delete">';
+     $str.='<input type = "hidden" name  = "appdate" value = "'.$date.'">';
+     $str.='<input type = "hidden" name  = "appmonth" value = "'.$month.'">';
+     $str.='<input type = "hidden" name  = "appyear" value = "'.$year.'">';
+     $str.='<input type = "hidden" name  = "appstime" value = "'.$stime.'">';
+     $str.='<input type = "hidden" name  = "appetime" value = "'.$etime.'">';
+      $str.='<input type = "hidden" name  = "apphidden" value = "hiddenapp">';
+     $str.='</form></td></tr>';
+
    }
 
  }
