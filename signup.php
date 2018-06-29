@@ -25,8 +25,10 @@ function print_form(){
   echo '<input type="text" name="nick" required > <br>';
   echo '<p class = "username"> Enter your password                          :-      </p>';
   echo    '<input type="password" name="password" value="" required> <br><br>';
-  echo '<img src = "/captcha.php" alt = "captcha">';
-  echo '   <input type="text" name="captcha" placeholder = "Enter captcha text here" required><br><br>';
+  echo '<img id = "captcha" src = "/captcha.php" alt = "captcha">';
+
+  echo '   <input type="text" name="captcha" placeholder = "Enter captcha text here" required>';
+  echo '<input type = "button" onclick = "reloadcaptcha()" Value = "Reload"/><br><br>';
   echo '<input type="hidden" name="stage" value="process">';
   echo    '<input type="submit" name="submit" value="submit" id = "submit">';
   echo    '</form>';
@@ -65,7 +67,11 @@ function process_form(){
 
   <script type="text/javascript">
 
+function reloadcaptcha(){
 
+document.getElementById('captcha').src = "/captcha.php?" + new Date().getTime();
+
+}
 
 var input = document.getElementById('userinputname');
 var str;
