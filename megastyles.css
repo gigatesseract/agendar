@@ -1,0 +1,264 @@
+body{
+   /* background-image: url("back.jpg"); */
+  background-color: #9370DB;
+  background-size: cover;
+  color: white;
+}
+.heading{
+  font-size: 25px;
+  position: relative;
+  left: 70%;
+  color:  	#CD853F;
+}
+.loginform{
+  text-align: left;
+  position: relative;
+  width: auto;
+  left: 65%;
+  font-size: 20px;
+  display: inline-block;
+  height: 30%;
+}
+.username{
+  margin-bottom:10px;
+  line-height: 10px;
+  background-color: inherit;
+  width: 200px;
+  height: 40px;
+  color: green;
+}
+.side-heading{
+  color:black;
+  width: 30%;
+  position: absolute;
+
+  font-size: 30px;
+}
+.captcha{
+  float: left;
+}
+.submit{
+  background: #E9967A;
+  border: 2px solid black;
+  cursor: pointer;
+  width: 80%;
+  height: 50%;
+  font-size: 20px;
+  position: relative;
+  left: 10%;
+  bottom: 10%;
+}
+.log{
+  color: #FF1493;
+  position: relative;
+  left: 38%;
+  font-size: 30px;
+
+}
+.logsubmit{
+  width: 20%;
+  height: 10%;
+  background: #E9967A;
+  border: 2px solid black;
+  cursor: pointer;
+  font-size: 20px;
+  position: relative;
+  left: 30%;
+  bottom: -10%;
+
+}
+
+.calendar{
+  position: absolute;
+  left: 60%;
+
+}
+.month-heading{
+  font-size: 25px;
+  text-align: center;
+}
+.day-heading{
+  color:#0FF;
+  font-size: 20px;
+}
+.calendar-table{
+  border: 5px solid black;
+
+}
+th, td{
+  border: 3px solid #FF1493;
+}
+.number{
+  text-align: center;
+
+}
+.number-pop{
+  cursor: pointer;
+}
+table{
+  table-layout: fixed;
+  width: 95%;
+  border-collapse: collapse;
+}
+
+.addbutton{
+  background-color: orange;
+  border: 2px solid black;
+}
+.monthbutton{
+  background-color:  	#FFD700;
+  border: 2px solid purple;
+  cursor: pointer;
+}
+
+#next{
+  position: absolute;
+  left: 50%;
+  bottom: 9%;
+
+}
+.logout{
+  position: relative;
+  left: 90%;
+  color:  	#A52A2A;
+}
+
+.jump{
+width: 80px;
+background-color: inherit;
+}
+.white-space{
+  width: 50%;
+  margin: 5%;
+}
+.meeting{
+  display: inline-block;
+  border: 5px solid purple;
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 20%;
+}
+.meeting-heading{
+  background-color: green;
+  height: 100%;
+  line-height: 2em;
+}
+.invitebutton{
+
+    background-color:  	#FFD700;
+    border: 2px solid purple;
+    cursor: pointer;
+    left: 10%;
+}
+.appointment{
+  display: inline-block;
+  border: 5px solid purple;
+  position: absolute;
+
+top: 40%;
+  left: 5%;
+  width: 20%;
+}
+.appointment-heading{
+  background-color: #FF00FF;
+  height: 100%;
+  line-height: 2em;
+}
+.descri{
+  height: 20%;
+
+}
+
+.pending{
+  border: 5px solid purple;
+  display: inline-block;
+  line-height: 2em;
+  text-align: center;
+  left: 35%;
+  position: absolute;
+  width: 20%;
+
+}
+.pending-heading{
+  background-color: black;
+}
+.pending-data{
+  color: yellow;
+  font-weight: bold;
+  font-size: 18px;
+}
+/* .display-popup{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+
+} */
+
+/* .popup{
+  position: absolute;
+  left: -40%;
+  color: black;
+
+
+} */
+.popup td{
+  text-align: left;
+  vertical-align: top;
+  color:  	#FFFF00;
+}
+.popup th{
+  color: black;
+}
+.popup table{
+  position: absolute;
+  top: 25%;
+  left: 30%;
+  width: 50%;
+  table-layout: fixed;
+  font-weight: bold;
+  font-size: 20px;
+
+}
+#descrip{
+  color: brown;
+}
+.close{
+  position: absolute;
+  left: 78%;
+  top: 22%;
+}
+.log1{
+  left: 80%;
+  color: #FF1493;
+  position: relative;
+  font-size: 30px;
+}
+a{
+  text-decoration: underline;
+  color: inherit;
+}
+.error{
+  position: relative;
+  font-size: 20px;
+  font-weight: bold;
+
+  color: red;
+}
+.signup{
+  color: green;
+}
+.correct{
+  position: relative;
+  font-size: 20px;
+  font-weight: bold;
+
+  color: green;
+}
+.success{
+  font-size: 30px;
+  font-weight: bold;
+  position: relative;
+  left: 40%;
+  color: #6B8E23;
+}

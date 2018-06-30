@@ -5,12 +5,13 @@
 
 <html>
 <head>
-  <link rel="stylesheet" href="/loginstyle.css">
+  <link rel="stylesheet" href="/megastyles.css">
 <title>Welcome!!!!!</title>
 </head>
 <body>
   <h1>
-<p class = "heading">Welcome to your virtual Manager.</p>
+<div class = "side-heading">
+  <p>Welcome to your virtual Manager.</p>
 <ul class = "list" >
   You can.....
   <li>Create an account</li>
@@ -18,9 +19,10 @@
   <li>Manage them, schedule invites with other people</li>
 </ul>
 </h1>
-<p class = "sign">Click <a href="signup.php"> here </a> to sign up.</p>
+</div>
+<p class = "log1">Click <a href="signup.php"> here </a> to sign up.</p>
 
-<p class = "log">Already have an account? click <a href="login.php">  here </a> to log in! </p>
+<p class = "log1">Already have an account? <br>Click <a href="login.php">  here </a> to log in! </p>
 <?php
 
 
@@ -28,4 +30,4 @@
 
 ?>
 </body>
-</html> 
+</html>

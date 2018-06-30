@@ -8,11 +8,13 @@ include 'calendar.php';
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="megastyles.css">
     <title>My Manager</title>
   </head>
   <body>
+    <a class = "logout" href="login.php">Log Out</a>
     <div id = "blanket">
-<p>WElcome, <?php echo $_SESSION['nick']; ?></p>
+<p class = "nick-heading">Welcome, <?php echo $_SESSION['name']; ?></p>
 
     <?php
     if(isset($_POST['jumpset']))
@@ -21,8 +23,11 @@ include 'calendar.php';
       $year = $_POST['jyear'];
       unset($_POST['jumpset']);
     }
+    echo '<div class = "calendar">';
 draw_calendar($month, $year);
 print_jumptodate();
+echo '</div>';
+
 
 
     if(isset($_POST['processappointment']))
@@ -50,19 +55,21 @@ print_jumptodate();
 
 
    function print_meeting(){
-
-     echo '<h4> Schedule a meeting with your friend </h4>';
-     echo '<div class = "meeting"><form></form>';
+     echo '<div class = "meeting">';
+     echo '<h4 class = "meeting-heading"> Schedule a meeting with your friend </h4>';
+     echo '<form></form>';
      echo '<form class="invform" method="post" action = "welcome.php" id = "iform">';
-     echo '<span> Enter username of friend </span><input type = "text" name = "invitee" placeholder = "Invite your friend" required><br>';
+     echo '<span> Enter username of friend </span><span class = "white-space"></span><input type = "text" name = "invitee" placeholder = "Invite your friend" required><span>';
+     if(isset($_SESSION['nouser'])) echo $_SESSION['nouser'];
+     echo '</span><br>';
      echo '<span> From time:- </span>';
      echo '<input type = "time" name = "stime" required/><span class = white-space></span>';
      echo '<span> To:-  </span>';
      echo '<input type = "time" name = "etime" required/><br>';
      echo '<span> On </span>';
-     echo '<input type = "date" name = "dmy" id = "idate" required/>';
+     echo '<input type = "date" name = "dmy" id = "idate" required/><span class = "white-space"></span><br>';
      echo '<input type = "hidden" name = "invite" value = "inviteset" />';
-     echo '<input type = "submit" name = "submit" value = "Invite"/>';
+     echo '<span class = "white-space"></span><span class = "white-space"></span><span class = "white-space"></span><input type = "submit" name = "submit" value = "Invite"  class = "invitebutton"/>';
      echo '</form>';
      echo '</div>';
 
@@ -70,21 +77,22 @@ print_jumptodate();
 
 // if(!function_exists('create_appointment')){
     function create_appointment(){
-      echo '<h3> Create an appointment for '.$_POST['date'].'/'.$_POST['month'].'/'.$_POST['year'].'</h3>';
+      echo '<div class = "appointment">';
+      echo '<h3 class = "appointment-heading"> Create an appointment for '.$_POST['date'].'/'.$_POST['month'].'/'.$_POST['year'].'</h3>';
 
     echo   '<form class="" action="welcome.php" method="post">';
     echo '   <span> Enter title of the appointment</span> <input type="text" name="title" value="" placeholder="Title" required/><br>';
-    echo '   <span> Optional Description:- </span> <input type="textarea" name="description" value="" placeholder="Descri"/><br>';
+    echo '   <span> Optional Description:- </span> <textarea name="description" value="" placeholder="Descri" class = "descri"></textarea><br>';
     echo '   <span> Start time of the appointment </span> <input type="time" name="start" value="" placeholder="start time" required><br>';
     echo '  <span> End time of the appointment </span><input type="time" name="end" value="" placeholder="end time" required><br>';
-    echo    '<input type="submit" name="submit" value="Create Appointment">';
+    echo    '<input type="submit" name="submit" value="Create Appointment" class = submit>';
     echo  '   <input type="hidden" name="processappointment" value="newappset">';
 
          // if(isset($_POST['processapp'])){
          echo '<input type = "hidden" name = "date" value = "'.$_POST['date'].'">';
          echo '<input type = "hidden" name = "month" value = "'.$_POST['month'].'">';
          echo '<input type = "hidden" name = "year" value = "'.$_POST['year'].'">';
-
+echo '</div>';
 
 
 
@@ -112,8 +120,9 @@ if($stmt = mysqli_prepare($conn, "SELECT NAME FROM deltadb.logintable WHERE NAME
  mysqli_stmt_store_result($stmt);
  if(mysqli_stmt_num_rows($stmt)==0)
  {
-   echo 'There is no user with that username';
+
    $flag =  TRUE;
+   $_SESSION['nouser'] = 'There is no user with that username';
  }
 
  }
@@ -122,7 +131,7 @@ if($stmt = mysqli_prepare($conn, "SELECT NAME FROM deltadb.logintable WHERE NAME
 if(!$flag){
 
 
-
+unset($_SESSION['nouser']);
 $status = "Not confirmed";
 $query = "INSERT INTO deltadb.meetingtable VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = mysqli_prepare($conn, $query);
@@ -247,24 +256,29 @@ echo '</script>';
     }
 
   }
-
+  if(isset($_POST['dmy']))
+  process_meeting();
+  ?>
+  <div class="pending" id = 'pending'>
+  <h3 class = "pending-heading">Pending Invites</h3>
+  <div class = "pending-data">
+  </div>
+  </div>
+  <?php
+   print_meeting();
    echo '</div>';
    $daysinmonth = date('t', mktime(0,0,0,$month, 1, $year));
    echo '<div class = "display-popup">';
    for($i=1;$i<=$daysinmonth;$i++)
    echo display_popup($i, $month, $year);
    echo '</div>';
-   print_meeting();
 
-if(isset($_POST['dmy']))
-process_meeting();
+
+
 
 
      ?>
-<div class="pending" id = 'pending'>
 
-
-</div>
   </body>
   <script type="text/javascript">
 
@@ -297,8 +311,9 @@ process_meeting();
   var idate = document.getElementById('idate');
 
   var xhr = new XMLHttpRequest();
-  var div = document.getElementById('pending');
+  var div = document.getElementsByClassName('pending-data')[0];
 function showPending(){
+  console.log('hi');
 
   xhr.open("GET", "pendingdisplay.php");
   xhr.send();
@@ -311,7 +326,7 @@ xhr.onreadystatechange = function () {
 
 };
 
-setInterval(showPending, 100);
+setInterval(showPending, 1000);
 
 
 

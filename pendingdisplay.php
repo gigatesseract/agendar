@@ -2,15 +2,18 @@
 include 'sqlconnect.php';
 
 function display_pending(){
-  $str = '';
+$str = '';
 $conn = mysqli_connect("localhost","username", "password");
 $query = "SELECT DAT, MONTH, YEAR, STIME, ETIME, INVITED_BY FROM deltadb.meetingtable WHERE INVITE_TO = '".$_SESSION['name']."' AND STATUS = 'Not confirmed'";
 if($stmt = mysqli_prepare($conn, $query)){
   mysqli_stmt_execute($stmt);
+  // if(mysqli_stmt_num_rows($stmt)==0) $str.="None";
   mysqli_stmt_bind_result($stmt, $date, $month, $year, $stime, $etime, $by);
+  mysqli_stmt_store_result($stmt);
+  if(mysqli_stmt_num_rows($stmt)==0) $str.="None";
   while(mysqli_stmt_fetch($stmt)){
     $str.='<div>';
-    $str.='<p>With '.$by.' on '.$date.'/'.$month.'/'.$year.' from '.$stime.' to '.$etime.'</p>';
+    $str.='<p class = "pending-data">With '.$by.' on '.$date.'/'.$month.'/'.$year.' from '.$stime.' to '.$etime.'</p>';
     $str.= '<form action = "welcome.php" method = "POST">';
     $str.='<input type = "submit" name = "submitinvite" value = "Accept"/>';
     $str.= '<input type = "submit" name = "submitinvite" value = "Decline"/>';
