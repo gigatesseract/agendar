@@ -8,7 +8,7 @@ INstructions:-
 * Quick note:- Install WAMP, grant all privileges to 'username'@'localhost', paste the files inside 'www' folder of wamp directory.
 
 1. Install the latest version of WAMP (32bit or 64bit as per your system configuration)
-2. Locate the root directory of WAMP, (Usually, SYSTEM:/wamp64)
+2. Locate the root directory of WAMP, (Usually, SYSTEM:/wamp32 or SYSTEM:/wamp64)
 3. Locate the folder named 'www' and access it. 
 4. Paste all of the above files in the www directory.
 5. Run wampserver 
