@@ -24,7 +24,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost';
 1. Login-system
 2. Scheduling your own-appointments and meetings with other people.
 3. Your data is secure from SQL INjections. 
-4. Your password is encrypted even when storing. So there is no way any other person can figure out the password even if he/she has the database.
+4. Your password is encrypted even when storing. So there is no way any other person can figure out the password even if he/she has access to the database.
 
 
 
