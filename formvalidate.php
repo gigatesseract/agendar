@@ -4,7 +4,7 @@ include 'sqlconnect.php';
 $flag = FALSE;
 $str = $_GET['name'];
 
-$conn = mysqli_connect("localhost", "username","password", "deltadb");
+global $conn;
 $query = "SELECT NAME FROM deltadb.logintable";
 
 if($stmt = mysqli_prepare($conn, $query))

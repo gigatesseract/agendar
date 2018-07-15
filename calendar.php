@@ -1,8 +1,10 @@
 <?php
 
 if(isset($_POST['month']))  $month = $_POST['month'];
-else $month = 6;
+else if(isset($_SESSION['month'])) $month = $_SESSION['month'];
+else $month = 7;
 if(isset($_POST['year'])) $year = $_POST['year'];
+else if(isset($_SESSION['year'])) $year = $_SESSION['year'];
 else $year = 2018;
 
 if($month>12){
@@ -91,7 +93,7 @@ function new_appointment($date, $month, $year){
 
 function display_appointments($date, $month, $year){
   $str = '';
-  $conn = mysqli_connect("localhost","username", "password");
+  global $conn;
   $query = "SELECT TITLE, STARTTIME, ENDTIME FROM deltadb.appointtable WHERE DAT = '".$date."' AND MONTH = '".$month."' AND YEAR = '".$year."' AND NAME = '".$_SESSION['name']."'";
   if(!mysqli_query($conn, $query)) $str.=mysqli_error($conn);
  if($stmt = mysqli_prepare($conn, $query)){
@@ -123,7 +125,7 @@ function display_popup($date,$month, $year){
 $daysinmonth = date('t', mktime(0,0,0,$month, 1, $year));
 
   $str = '<div class = "popup" style = "display:none" id = "'.$date.'"><table><th>Title</th><th>Description</th><th>Start time </th><th>End time </th>';
-  $conn = mysqli_connect("localhost","username", "password");
+  global $conn;
   $query ="SELECT TITLE, DESCRIPTION, STARTTIME, ENDTIME FROM deltadb.appointtable WHERE DAT = '".$date."' AND MONTH = '".$month."' AND YEAR = '".$year."' AND NAME = '".$_SESSION['name']."'";
   if($stmt = mysqli_prepare($conn, $query)){
    mysqli_stmt_execute($stmt);

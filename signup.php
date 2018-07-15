@@ -49,7 +49,7 @@ process_form();
 else print_form();
 
 function process_form(){
-  $conn = mysqli_connect("localhost", "username","password", "deltadb");
+  global $conn;
   if($_POST['captcha'] != $_SESSION['code']) {
     echo '<p class = "error">Invalid captcha</p>';
     print_form();

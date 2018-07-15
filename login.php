@@ -22,7 +22,9 @@ include 'sqlconnect.php';
     </div>
 <p class = "heading"> Log in</p>
     <?php
+    if(isset($_SESSION['success'])){
   if($_SESSION['signup'] == "success") echo '<p class = "success"> Registered Successfully</p>';
+}
     function print_form(){
     echo '<div class = "loginform">';
     echo  '<form class="login" action="login.php" method="post">';
@@ -38,7 +40,7 @@ include 'sqlconnect.php';
 
     function process_form(){
 
-       $conn = mysqli_connect("localhost", "username","password", "deltadb");
+      global $conn;
        $username = $_POST['username'];
       $query = "SELECT NAME, PASSWORD FROM deltadb.logintable where NAME = ?";
       if($stmt = mysqli_prepare($conn, $query)){

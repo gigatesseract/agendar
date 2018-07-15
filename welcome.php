@@ -102,7 +102,7 @@ echo '</div>';
 
 
 function process_meeting(){
-  $conn = mysqli_connect("localhost","username", "password", "deltadb");
+  global $conn;
   $flag = FALSE;
 $dmy = $_POST['dmy'];
 $stime = $_POST['stime'];
@@ -140,6 +140,8 @@ mysqli_stmt_execute($stmt);
 
 
 }
+$_SESSION['month'] = $month;
+$_SESSION['year'] = $year;
 echo '<script type="text/javascript">';
 echo 'document.location.replace("/welcome.php")';
 echo '</script>';
@@ -157,6 +159,8 @@ function delete_appointment(){
 {
   mysqli_stmt_bind_param($stmt, 'siiiss', $_SESSION['name'], $date, $month, $year, $stime, $etime);
   mysqli_execute($stmt);
+  $_SESSION['month'] = $month;
+  $_SESSION['year'] = $year;
   echo '<script type="text/javascript">';
 echo 'document.location.replace("/welcome.php")';
 echo '</script>';
@@ -205,7 +209,8 @@ echo '</script>';
         echo 'hi';
       }
 
-
+      $_SESSION['month'] = $month;
+      $_SESSION['year'] = $year;
 
     echo '<script type="text/javascript">';
   echo 'document.location.replace("/welcome.php")';

@@ -3,7 +3,7 @@ include 'sqlconnect.php';
 
 function display_pending(){
 $str = '';
-$conn = mysqli_connect("localhost","username", "password");
+global $conn;
 $query = "SELECT DAT, MONTH, YEAR, STIME, ETIME, INVITED_BY FROM deltadb.meetingtable WHERE INVITE_TO = '".$_SESSION['name']."' AND STATUS = 'Not confirmed'";
 if($stmt = mysqli_prepare($conn, $query)){
   mysqli_stmt_execute($stmt);
